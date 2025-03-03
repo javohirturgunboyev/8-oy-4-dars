@@ -1,57 +1,39 @@
-class Person {
-    constructor(public name: string, public age: number, public userId: number) {}
+// type Base = "Classic" | "Mushroom" | "Greek" | "Napaleon" | "Peperoni";
 
-    details() {
-        console.log(`Name: ${this.name}, Age: ${this.age}, ID: ${this.userId}`);
+type PaymentColumn = ("id" | "amount" | "to" | "notes")[];
+
+interface Payment {
+    id: number;
+    amount: number;
+    to: string;
+    notes: string;
+}
+
+class CSVWriter {
+    constructor(private paymentColumn: PaymentColumn) {
+        this.csv = paymentColumn.join(",") + "\n";
+    }
+
+    private csv: string;
+
+    save() { }
+
+    addRow(payments: Payment[]) {
+        this.csv += payments.map(payment => this.formatRow(payment)).join("");
+        console.log(this.csv);
+    }
+
+    formatRow(payment: Payment) {
+        return this.paymentColumn.map(col => payment[col]).join(",") + '\n';
     }
 }
 
-class Moderator extends Person {
-    constructor(name: string, age: number, userId: number) {
-        super(name, age, userId);
-    }
+const file1 = new CSVWriter(["id", "amount", "to", "notes"]);
 
-    removeUser() {
-        console.log(`${this.name} delete`);
-    }
+let nextPizzaId = 1;
 
-    addUser() {
-        console.log(`${this.name} add`);
-    }
-}
-
-class SuperUser extends Person {
-    constructor(name: string, age: number, userId: number) {
-        super(name, age, userId);
-    }
-
-    promoteModerator(moderator: Moderator) {
-        console.log(`${this.name} ${moderator.name} ning huquqlarini kengaytirdi`);
-    }
-}
-
-class AI extends Person {
-    constructor(name: string, age: number, userId: number) {
-        super(name, age, userId);
-    }
-}
-
-const mainUser = new SuperUser("Alex", 77, 7777);
-mainUser.details();
-
-const mod1 = new Moderator("Jake", 16, 21450);
-mod1.details();
-mod1.addUser();
-mod1.removeUser();
-mainUser.promoteModerator(mod1);
-
-const aiBot = new AI("HelperBot", 5, 303);
-aiBot.details();
-
-console.log(mainUser);
-console.log(mod1);
-console.log(aiBot);
-
-
-
-
+file1.addRow([
+    { id: nextPizzaId++, amount: 500, to: "John", notes: "For dinner" },
+    { id: nextPizzaId++, amount: 1600, to: "Alex", notes: "For lunch" },
+    { id: nextPizzaId++, amount: 200, to: "Steve", notes: "For Breakfast" },
+])
