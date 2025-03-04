@@ -2,6 +2,8 @@
 
 type PaymentColumn = ("id" | "amount" | "to" | "notes")[];
 
+import { appendFileSync} from "fs"
+
 interface Payment {
     id: number;
     amount: number;
@@ -16,11 +18,15 @@ class CSVWriter {
 
     private csv: string;
 
-    save() { }
+    save(pathFile: string) {
+        appendFileSync( pathFile, this.csv)
+
+        this.csv = "";
+     }
 
     addRow(payments: Payment[]) {
         this.csv += payments.map(payment => this.formatRow(payment)).join("");
-        console.log(this.csv);
+        
     }
 
     formatRow(payment: Payment) {
@@ -37,3 +43,6 @@ file1.addRow([
     { id: nextPizzaId++, amount: 1600, to: "Alex", notes: "For lunch" },
     { id: nextPizzaId++, amount: 200, to: "Steve", notes: "For Breakfast" },
 ])
+
+
+file1.save('./data/payment.csv')
